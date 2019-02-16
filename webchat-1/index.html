@@ -1,0 +1,390 @@
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Open Sans', 'Helvetica Neue', Arial, "Hiragino Sans GB", sans-serif;
+            line-height: 1.5;
+        }
+
+        .WebchatClirackMessage {
+            padding: .75em 0 !important;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div style="display:inline-block">
+        <div style="display: inline-block;">
+            <div id="webchatClirackChat">
+                <div id="WebChatTittle" style="max-height: 34px; background: #56B8E5; padding: 8px 15px;font-weight: bold;color: #fff; border-top-right-radius: 0.5rem; border-top-left-radius: 0.5rem;; ">
+                    <div id="WebChatTittleText" style="display: inline-block;">Tittle</div>
+                    <div onclick="openChat()" style="float: right;padding: 5px 5px;cursor:pointer;">
+                        <svg width="16px" height="11px" viewBox="0 0 11 7" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <polygon id="WebchatHiddenIcon" fill="#FFFFFF" points="5.5 6.5 0 1.5 1.65 0 5.5 3.75 9.35 0 11 1.5"></polygon>
+                        </svg>
+                    </div>
+                </div>
+                <div id="webchatClirackChatList" style="height: 248px; overflow: scroll; overflow-x: hidden; padding: 0.5em 0.75em;">
+                    
+                </div>
+                <div style="overflow: hidden;padding: 8px 15px; border:1px solid #f3f3f4; color: #fff; border-bottom-right-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
+                    <div style="position: relative; display: table; border-collapse: separate;">
+                        <textarea onkeydown="if (event.keyCode == 13) { if(!event.shiftKey){event.preventDefault(); sendMessage(event);}else{textAreaAdjust(this)}} else{textAreaAdjust(this)}"
+                            id="WebchatClirackMessageInput" style="overflow:hidden; width: 100%;background-color: #FFFFFF; outline: 0; border: 0px; height: 28px; padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px;display: table-cell;border-top-right-radius: 0; border-bottom-right-radius: 0; resize: none;"></textarea>
+                        <div style="display: table-cell;position: relative;font-size: 0; white-space: nowrap;width: 1%; white-space: nowrap;vertical-align: middle;">
+                            <div onclick="sendMessage(this)" style="cursor:pointer">
+                                <svg width="23px" height="20px" viewBox="0 0 82 72" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <path d="M1,28.0512987 C1,27.7758689 1,7.25048571 1,4.50868623 C1,0.2635395 1,0.2635395 7.10270052,2.42669044 C37.2331255,14.6271194 64.1816613,26.8709526 76.4204185,32.1467382 C80.137655,34.0473619 81,34.0473619 81,35.9168262 C81,37.7862906 80.137655,37.7862906 76.4204185,39.4918334 C61.0665651,46.3383513 35.3655554,58.2131298 7.10270052,69.4069621 C1,71.7811285 1,71.7811285 1,67.4849855 C1,56.7991997 1,46.8465768 1,43.7712979 C1,40.6960191 1,40.6960191 4.67951204,40.5517589 C30.3485163,38.6239635 58.3693784,35.9168262 56.8672228,35.9168262 C55.3650673,35.9168262 32.9707777,32.0775099 4.67951204,31.0007781 C1,31.0007781 1,31.0007781 1,28.0512987 Z"
+                                        id="WebchatSendIcon" stroke="#56B8E5" fill="#019FE4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="webchatClirackToggle" onclick="openChat()">
+            <svg width="50px" height="50px" viewBox="0 0 52 52" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <circle id="WebchatToggleIconCircle" stroke="#56B8E5" stroke-width="0.9765625" fill="#019FE4" cx="26"
+                        cy="26" r="25"></circle>
+                    <path d="M37.2142857,14 L15.7857143,14 C14.8035714,14 14,14.8333333 14,15.8518519 L14,30.6666667 C14,31.6851852 14.8035714,32.5185185 15.7857143,32.5185185 L19.3571429,32.5185185 L19.3571429,39 L25.6071429,32.5185185 L37.2142857,32.5185185 C38.1964286,32.5185185 39,31.6851852 39,30.6666667 L39,15.8518519 C39,14.8333333 38.1964286,14 37.2142857,14 Z M37.2142857,30.6666667 L24.7142857,30.6666667 L21.1428571,34.3703704 L21.1428571,30.6666667 L15.7857143,30.6666667 L15.7857143,15.8518519 L37.2142857,15.8518519 L37.2142857,30.6666667 Z"
+                        id="WebchatToggleIcon" fill="#FFFFFF" fill-rule="nonzero"></path>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <script src="//127.0.0.1:8080/socket.io/socket.io.js"></script>
+
+    <script>
+    var socket = io();
+
+        let personalInformation = {
+            name: '',
+            email: '',
+            room: '',
+            supportName: '',
+            identificationKey: ''
+        }
+        let isScrolled = false;
+        let askName = ''
+        let askEmail = ''
+        let askEmailError = ''
+        let askNameError = ''
+        function sendMessage(e) {
+            let WebchatClirackMessageInput = document.getElementById("WebchatClirackMessageInput");
+            if (WebchatClirackMessageInput.value.length > 0) {
+                let message = WebchatClirackMessageInput.value
+                addMessage(message)
+
+                if (personalInformation.name === '') {
+                    message.replace(/(\r\n|\n|\r)/gm, " ")
+                    if (message.split(' ').length < 4) {
+                        personalInformation.name = message
+                        setTimeout(function () {
+                            addMessage(askEmail, sender = false)
+                        }, 2500)
+                    } else {
+                        setTimeout(function () {
+                            addMessage(askNameError, sender = false)
+                        }, 2500)
+                    }
+                }
+                else if (personalInformation.email === '') {
+                    let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    if (re.test(message)) {
+                        personalInformation.email = message
+                        if (personalInformation.room === '') {
+                    personalInformation.room = localStorage.getItem("room");
+                    console.log(personalInformation.identificationKey)
+                    socket.on('get room', function (msg) {
+                        localStorage.setItem("room", msg)
+                        personalInformation.room = msg
+                        socket.on(personalInformation.room, function (msg) {
+                            addMessage(msg, sender = false)
+                        });
+                        socket.emit('send message', personalInformation.identificationKey, personalInformation.room, personalInformation.name, personalInformation.name + " (" + personalInformation.room +") - "+ personalInformation.email);
+
+                    });
+                    socket.emit('get room', personalInformation.identificationKey, personalInformation.room , personalInformation.name, personalInformation.email);
+
+                }
+                    } else {
+                        setTimeout(function () {
+                            addMessage(askEmail, sender = false)
+                        }, 2500)
+                    }
+                }
+                else{
+                    socket.emit('send message', personalInformation.identificationKey, personalInformation.room, personalInformation.name, message);
+                }
+                WebchatClirackMessageInput.value = "";
+                textAreaAdjust(WebchatClirackMessageInput)
+            }
+
+        }
+
+        function openChat() {
+
+            let webchatClirackChat = document.getElementById("webchatClirackChat")
+            let webchatClirackToggle = document.getElementById("webchatClirackToggle")
+            if (webchatClirackChat.style.height === '0px' || webchatClirackChat.style.height === '') {
+                webchatClirackToggle.style.animationName = "closeToggleAnimation";
+                webchatClirackToggle.style.WebkitAnimationName = "closeToggleAnimation";
+
+
+
+                webchatClirackChat.removeEventListener("animationend", hidden, false);
+                webchatClirackChat.removeEventListener("webkitAnimationEnd", hidden, false);
+                webchatClirackToggle.addEventListener("animationend", show, false);
+                webchatClirackToggle.addEventListener("webkitAnimationEnd", show, false);
+
+            } else {
+
+                webchatClirackChat.style.animationName = "closeChatAnimation";
+                webchatClirackChat.style.WebkitAnimationName = "closeChatAnimation";
+
+                webchatClirackChat.addEventListener("animationend", hidden, false);
+                webchatClirackChat.addEventListener("webkitAnimationEnd", hidden, false);
+                webchatClirackToggle.removeEventListener("animationend", show, false);
+                webchatClirackToggle.removeEventListener("webkitAnimationEnd", show, false);
+
+            }
+            if (personalInformation.name === '') {
+                setTimeout(function () {
+                    addMessage(askName, sender = false)
+                }, 1500)
+            }
+        }
+        function addMessage(message, sender = true) {
+            let webchatClirackChatList = document.getElementById("webchatClirackChatList")
+            let scrollPosition = webchatClirackChatList.scrollTop/(webchatClirackChatList.scrollHeight - webchatClirackChatList.clientHeight)
+            if (sender) {
+                webchatClirackChatList.innerHTML += `
+                <div class="WebchatClirackMessage">
+                        <div class="WebchatClirackMessageUserSender">${personalInformation.name}</div>
+                        <div class="WebchatClirackMessageTextSender">${message}</div>
+                    </div>
+                    `
+            }
+            else {
+                webchatClirackChatList.innerHTML += `
+                <div class="WebchatClirackMessage">
+                        <div class="WebchatClirackMessageUserReciber">${personalInformation.supportName}</div>
+                        <div class="WebchatClirackMessageTextReciber">${message}</div>
+                    </div>
+                    `
+                    alertMessage.play();
+
+            }
+            if(scrollPosition > 0.99 || !isScrolled){
+                webchatClirackChatList.scrollTop = webchatClirackChatList.scrollHeight
+                if(scrollPosition === 0){
+                    isScrolled = true
+                }
+            }
+
+        }
+        function send(s) {
+            window.parent.postMessage(s, '*');
+        }
+        function textAreaAdjust(e) {
+            let webchatClirackChatList = document.getElementById("webchatClirackChatList")
+            e.style.height = "1px";
+            if (e.scrollHeight > 82) {
+                webchatClirackChatList.style.height = (276 - 82) + 'px'
+
+                e.style.height = "82px";
+                e.style.overflow = "scroll";
+                e.style.overflowX = "hidden";
+            }
+            else {
+                webchatClirackChatList.style.height = (276 - e.scrollHeight) + 'px'
+
+                e.style.height = (e.scrollHeight) + "px";
+                e.style.overflow = "hidden";
+            }
+        }
+        let hidden = function () {
+            send('hidden');
+            let webchatClirackChat = document.getElementById("webchatClirackChat")
+            let webchatClirackToggle = document.getElementById("webchatClirackToggle")
+            webchatClirackChat.style.display = "none";
+
+            setTimeout(function () {
+                webchatClirackChat.style.margin = "0px";
+                webchatClirackChat.style.height = "0px";
+                webchatClirackChat.style.width = "0px";
+                webchatClirackToggle.style.display = "inline-block";
+                webchatClirackToggle.style.animationName = "openToggleAnimation";
+                webchatClirackToggle.style.WebkitAnimationName = "openToggleAnimation";
+
+            }, 50)
+        }
+        let show = function () {
+            send('show');
+
+            let webchatClirackToggle = document.getElementById("webchatClirackToggle")
+            webchatClirackToggle.style.display = "none";
+            webchatClirackChat.style.display = "inline-block";
+
+            setTimeout(function () {
+
+                webchatClirackChat.style.animationName = "openChatAnimation";
+                webchatClirackChat.style.WebkitAnimationName = "openChatAnimation";
+                webchatClirackChat.style.height = "350px";
+                webchatClirackChat.style.width = "250px";
+                webchatClirackChat.style.margin = "10px";
+                webchatClirackChat.style.bottom = "0px";
+            }, 50)
+        }
+        // Load
+        function load() {
+            let url = new URL(window.location.href);
+            personalInformation.identificationKey = (!!url.searchParams.get("identificationKey")) ? decodeURIComponent(url.searchParams.get("identificationKey")) : ''
+            let tittle = (!!url.searchParams.get("tittle")) ? decodeURIComponent(url.searchParams.get("tittle")) : '&nbsp;'
+
+            let themeColor = (!!url.searchParams.get("themeColor")) ? decodeURIComponent(url.searchParams.get("themeColor")) : '#56B8E5'
+            let fontColor = (!!url.searchParams.get("fontColor")) ? decodeURIComponent(url.searchParams.get("fontColor")) : '#FFF'
+
+            let fontColorNames = (!!url.searchParams.get("fontColorNames")) ? decodeURIComponent(url.searchParams.get("fontColorNames")) : '#50565d'
+            let backgroundColor = (!!url.searchParams.get("backgroundColor")) ? decodeURIComponent(url.searchParams.get("backgroundColor")) : '#FFFFFF'
+
+            let fontColorReciber = (!!url.searchParams.get("fontColorReciber")) ? decodeURIComponent(url.searchParams.get("fontColorReciber")) : '#50565d'
+            let fontColorSender = (!!url.searchParams.get("fontColorSender")) ? decodeURIComponent(url.searchParams.get("fontColorSender")) : '#FFFFFF'
+            let backgroundReciber = (!!url.searchParams.get("backgroundReciber")) ? decodeURIComponent(url.searchParams.get("backgroundReciber")) : '#e6ecf0'
+            let backgroundSender = (!!url.searchParams.get("backgroundSender")) ? decodeURIComponent(url.searchParams.get("backgroundSender")) : '#56B8E5'
+
+            let openChatAnimation = (!!url.searchParams.get("openChat")) ? decodeURIComponent(url.searchParams.get("openChat")) : 'from {bottom: -450px;} to {bottom: 0px;}'
+            let closeChatAnimation = (!!url.searchParams.get("closeChat")) ? decodeURIComponent(url.searchParams.get("closeChat")) : 'from {bottom: 0px;} to {bottom: -450px;}'
+            let openToggleAnimation = (!!url.searchParams.get("openToggle")) ? decodeURIComponent(url.searchParams.get("openToggle")) : 'from {right: -75px;} to {right: 0px;}'
+            let closeToggleAnimation = (!!url.searchParams.get("closeToggle")) ? decodeURIComponent(url.searchParams.get("closeToggle")) : 'from {right: 0px;} to {right: -75px;}'
+            let animationVelocity = (!!url.searchParams.get("animationVelocity")) ? decodeURIComponent(url.searchParams.get("animationVelocity")) : '1s'
+
+            askName = (!!url.searchParams.get("askName")) ? decodeURIComponent(url.searchParams.get("askName")) : 'Hi, what is your name?'
+            askNameError = (!!url.searchParams.get("askNameError")) ? decodeURIComponent(url.searchParams.get("askNameError")) : 'Please, help us with a name'
+            askEmail = (!!url.searchParams.get("askEmail")) ? decodeURIComponent(url.searchParams.get("askEmail")) : 'Please, help us with an email'
+            askEmailError = (!!url.searchParams.get("askEmailError")) ? decodeURIComponent(url.searchParams.get("askEmailError")) : 'Please, help us with a correct email'
+
+            let referer = (!!url.searchParams.get("referer")) ? decodeURIComponent(url.searchParams.get("referer")) : ''
+
+            document.addEventListener('DOMContentLoaded', function () {
+                let WebChatTittle = document.getElementById("WebChatTittle")
+                WebChatTittle.style.backgroundColor = themeColor;
+                let WebChatTittleText = document.getElementById("WebChatTittleText")
+                WebChatTittleText.style.color = fontColor;
+                WebChatTittleText.innerHTML = tittle.substring(0, 20);;
+                let WebchatToggleIcon = document.getElementById("WebchatToggleIcon")
+                WebchatToggleIcon.style.fill = fontColor;
+                let WebchatHiddenIcon = document.getElementById("WebchatHiddenIcon")
+                WebchatHiddenIcon.style.fill = fontColor;
+
+                let WebchatToggleIconCircle = document.getElementById("WebchatToggleIconCircle")
+                WebchatToggleIconCircle.style.fill = themeColor;
+                WebchatToggleIconCircle.style.stroke = themeColor;
+                let WebchatSendIcon = document.getElementById("WebchatSendIcon")
+                WebchatSendIcon.style.fill = themeColor;
+
+                let webchatClirackChatList = document.getElementById("webchatClirackChatList")
+                webchatClirackChatList.style.backgroundColor = backgroundColor;
+
+                customStyleSheet = document.head.getElementsByTagName("style")[0].innerHTML;
+                // Colors of ChatBox
+                document.head.getElementsByTagName("style")[0].innerHTML += `
+                    .WebchatClirackMessageUserReciber {
+                        display: block;
+                        font-size: 85%;
+                        color: ${fontColorNames};
+                        margin-bottom: 4px;
+                        text-align: left;
+                    }
+                    .WebchatClirackMessageUserSender {
+                        display: block;
+                        font-size: 85%;
+                        color: ${fontColorNames};
+                        margin-bottom: 4px !important;
+                        text-align: right;
+                    }
+                    .WebchatClirackMessageTextReciber {
+                        background: ${backgroundReciber};
+                        border: ${backgroundReciber};
+                        border-radius: 8px;
+                        display: block;
+                        padding: .75em 1em;
+                        font-size: 90%;
+                        line-height: 1.2;
+                        color: ${fontColorReciber};
+                        text-align: left;
+                    }
+                    .WebchatClirackMessageTextSender {
+                        background: ${backgroundSender};
+                        border: ${backgroundSender};
+                        border-radius: 8px;
+                        display: block;
+                        padding: .75em 1em;
+                        font-size: 90%;
+                        line-height: 1.2;
+                        color: ${fontColorSender};
+                        text-align: right;
+                    }
+                    `
+                // Animation ChatBox
+                document.head.getElementsByTagName("style")[0].innerHTML += `
+                @keyframes openChatAnimation {
+                    ${openChatAnimation}
+                }
+                @keyframes closeChatAnimation {
+                    ${closeChatAnimation}
+                }
+                `
+                // Animation Toggle
+                document.head.getElementsByTagName("style")[0].innerHTML += `
+                @keyframes openToggleAnimation {
+                    ${openToggleAnimation}
+                }
+                @keyframes closeToggleAnimation {
+                    ${closeToggleAnimation}
+                }
+                `
+                // Animation Time
+                document.head.getElementsByTagName("style")[0].innerHTML += `
+                #webchatClirackChat {
+                    margin: 0px;
+                    height: 0px;
+                    width: 0px;
+                    overflow: hidden;
+                    border-radius: 0.5rem;
+                    box-shadow: 0px 0px 20px 1px rgba(170, 170, 170, 1);
+                    position: relative;
+                    animation-duration: ${animationVelocity};
+                    animation-fill-mode: backwards;
+                }
+
+                #webchatClirackToggle {
+                    cursor: pointer;
+                    display: inline-block;
+                    position: relative;
+                    animation-duration: ${animationVelocity};
+                    animation-fill-mode: backwards;
+                }
+                `
+
+            }, false);
+
+            personalInformation.name = localStorage.getItem("name") ? localStorage.getItem("name") : '' ;
+            personalInformation.email = localStorage.getItem("email") ? localStorage.getItem("email") : '' ;
+            personalInformation.supportName = tittle.length >0 ? tittle : 'Support' ;
+        }
+        load();
+        var alertMessage = new Audio('./message.mp3');
+
+    </script>
+</body>
+
+</html>
