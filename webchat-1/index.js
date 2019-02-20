@@ -15,7 +15,7 @@ var Webchat = function (args) {
     var ScriptTag = document.getElementById("ClirackWebchat");
 
     // get domain of calling script for dev server support
-    var src = ScriptTag.getAttribute('src').match(/\/\/([^\/]+)/);
+    var src = ScriptTag.getAttribute('src').match(/((?:\/[^\/]+)+)(?=\/[^\/]+)/);
     this.domain = '//' + src[1];
     this.identificationKey = ScriptTag.getAttribute('webchat-identification-key');
     this.tittle = ScriptTag.getAttribute('webchat-tittle');
@@ -48,7 +48,7 @@ var Webchat = function (args) {
 
 Webchat.prototype.iframe = {};
 Webchat.prototype.iframe.id = 'iFrameWebchat';
-Webchat.prototype.iframe.src = './index.html';
+Webchat.prototype.iframe.src = '/index.html';
 Webchat.prototype.iframe.allowtransparency = true;
 
 Webchat.prototype.iframe.style = {}
