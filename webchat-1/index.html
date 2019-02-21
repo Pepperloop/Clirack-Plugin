@@ -190,6 +190,7 @@
             let webchatClirackChat = document.getElementById("webchatClirackChat")
             let webchatClirackChatList = document.getElementById("webchatClirackChatList")
             let scrollPosition = webchatClirackChatList.scrollTop / (webchatClirackChatList.scrollHeight - webchatClirackChatList.clientHeight)
+            let WebchatClirackMessageUserReciber = ''
             if (sender) {
                 webchatClirackChatList.innerHTML += `
                 <div class="WebchatClirackMessage">
@@ -197,8 +198,7 @@
                         <div class="WebchatClirackMessageTextSender">${message}</div>
                     </div>
                     `
-            
-
+                WebchatClirackMessageUserReciber = personalInformation.name
 
             }
             else {
@@ -208,7 +208,8 @@
                         <div class="WebchatClirackMessageTextReciber">${message}</div>
                     </div>
                     `
-               
+                WebchatClirackMessageUserReciber = personalInformation.supportName
+
                 if (!isOpen) {
                     openChat()
                 }
