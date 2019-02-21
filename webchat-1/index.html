@@ -216,7 +216,7 @@
                 alertMessage.play();
 
             }
-            personalInformation.chatHistory.push({ sender: sender, webchatClirackMessageUserName: personalInformation.supportName, message: message })
+            personalInformation.chatHistory.push({ sender: sender, webchatClirackMessageUserName: WebchatClirackMessageUserReciber, message: message })
              localStorage.setItem("chatHistory", JSON.stringify(personalInformation.chatHistory))
 
             if (scrollPosition > 0.99 || !isScrolled) {
