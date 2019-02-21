@@ -59,6 +59,8 @@ Webchat.prototype.iframe.style.bottom = '0px';
 Webchat.prototype.iframe.style.width = '75px';
 Webchat.prototype.iframe.style.height = '75px';
 Webchat.prototype.iframe.style.border = 'none';
+Webchat.prototype.iframe.style.overflow = 'hidden';
+
 
 
 Webchat.prototype.load = function () {
