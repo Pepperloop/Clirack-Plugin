@@ -36,7 +36,7 @@
 
                 </div>
                 <div
-                    style="overflow: hidden;padding: 8px 15px; border:1px solid #f3f3f4; color: #fff; border-bottom-right-radius: 0.5rem; border-bottom-left-radius: 0.5rem;">
+                    style="overflow: hidden;padding: 8px 15px; border:1px solid #f3f3f4; color: #fff; border-bottom-right-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: #FFFFFF;">
                     <div style="position: relative; display: table; border-collapse: separate;">
                         <textarea
                             onkeydown="if (event.keyCode == 13) { if(!event.shiftKey){event.preventDefault(); sendMessage(event);}else{textAreaAdjust(this)}} else{textAreaAdjust(this)}"
@@ -333,6 +333,7 @@
                 WebchatToggleIconCircle.style.stroke = themeColor;
                 let WebchatSendIcon = document.getElementById("WebchatSendIcon")
                 WebchatSendIcon.style.fill = themeColor;
+                WebchatSendIcon.style.stroke = themeColor;
 
                 let webchatClirackChatList = document.getElementById("webchatClirackChatList")
                 webchatClirackChatList.style.backgroundColor = backgroundColor;
